@@ -1,0 +1,45 @@
+name: Update Decks Data
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  update-json:
+    if: contains(github.event.issue.labels.*.name, 'new-deck')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Extract Deck JSON
+        id: extract
+        run: |
+          BODY="${{ github.event.issue.body }}"
+          JSON=$(echo "$BODY" | sed -n '/---DECK_JSON_START---/,/---DECK_JSON_END---/p' | sed '1d;$d')
+          echo "DECK_JSON<<EOF" >> $GITHUB_ENV
+          echo "$JSON" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Update decks.json
+        run: |
+          # Read existing data
+          FILE="data/decks.json"
+          if [ ! -f "$FILE" ]; then echo "[]" > "$FILE"; fi
+          
+          # Append new deck and keep it pretty
+          jq ". | [${{ env.DECK_JSON }}] + ." "$FILE" > temp.json && mv temp.json "$FILE"
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/decks.json
+          git commit -m "Add new deck: ${{ github.event.issue.title }}"
+          git push
+
+      - name: Close Issue
+        run: |
+          gh issue close ${{ github.event.issue.number }} --comment "덱이 성공적으로 등록되었습니다! 잠시 후 사이트에 반영됩니다."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

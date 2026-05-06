@@ -10,35 +10,30 @@ document.addEventListener('DOMContentLoaded', () => {
         Colorless: ["Alchemize", "Anointed", "Apotheosis", "Apparition", "Automation", "BeaconofHope", "BeatDown", "BelieveinYou", "Bolas", "BrightestFlame", "ByrdSwoop", "Calamity", "Catastrophe", "Coordinate", "DarkShackles", "Discovery", "DramaticEntrance", "Enlightenment", "Entropy", "Equilibrium", "EternalArmor", "Exterminate", "Fasten", "FeedingFrenzy", "Finesse", "Fisticuffs", "FlashofSteel", "Fuel", "GangUp", "GiantRock", "GoldAxe", "HandofGreed", "HiddenGem", "HuddleUp", "Impatience", "Intercept", "JackofAllTrades", "Jackpot", "Knockdown", "Lift", "Luminesce", "MasterofStrategy", "Maul", "Mayhem", "Metamorphosis", "Mimic", "MindBlast", "MinionDiveBomb", "MinionSacrifice", "MinionStrike", "NeowsFury", "Nostalgia", "Omnislice", "Panache", "PanicButton", "Peck", "PrepTime", "Production", "Prolong", "Prowess", "Purity", "Rally", "Relax", "Rend", "Restlessness", "RollingBoulder", "Salvo", "Scrawl", "SecretTechnique", "SecretWeapon", "SeekerStrike", "Shiv", "Shockwave", "Soul", "SovereignBlade", "Splash", "Squash", "Stratagem", "SweepingGaze", "TagTeam", "TheBomb", "TheGambit", "ThinkingAhead", "ThrummingHatchet", "ToricToughness", "UltimateDefend", "UltimateStrike", "Volley", "Whistle", "Wish"]
     };
 
-    let decks = JSON.parse(localStorage.getItem('sts2_decks'));
-    if (!decks || decks.length === 0) {
-        // 초기 목업 데이터 (처음 방문 시 텅 비어 보이지 않게 함)
-        decks = [
-            {
-                id: 1,
-                name: "무한 단검 암살 덱",
-                character: "Silent",
-                cards: [
-                    { character: "Silent", name: "BladeDance", fileName: "150px-StS2_Silent-BladeDance.webp", qty: 3 },
-                    { character: "Silent", name: "Accuracy", fileName: "150px-StS2_Silent-Accuracy.webp", qty: 2 },
-                    { character: "Silent", name: "Afterimage", fileName: "150px-StS2_Silent-Afterimage.webp", qty: 1 }
-                ],
-                likes: 12, dislikes: 1, date: "2024. 05. 01."
-            },
-            {
-                id: 2,
-                name: "철벽 근력 방어 덱",
-                character: "Ironclad",
-                cards: [
-                    { character: "Ironclad", name: "Barricade", fileName: "150px-StS2_Ironclad-Barricade.webp", qty: 1 },
-                    { character: "Ironclad", name: "BodySlam", fileName: "150px-StS2_Ironclad-BodySlam.webp", qty: 2 },
-                    { character: "Ironclad", name: "Entrench", fileName: "150px-StS2_Ironclad-Entrench.webp", qty: 1 }
-                ],
-                likes: 8, dislikes: 0, date: "2024. 05. 02."
+    // 깃허브 설정 (유저님이 직접 채워주세요!)
+    const GITHUB_USER = 'theta1129'; 
+    const GITHUB_REPO = 'Team-3';
+    const DATA_URL = `./data/decks.json`; // 로컬 및 서버에서도 동일하게 작동
+
+    let decks = [];
+    
+    // 1. 서버(JSON)에서 데이터 불러오기
+    async function loadDecks() {
+        try {
+            const response = await fetch(DATA_URL + '?t=' + Date.now()); // 캐시 방지
+            if (response.ok) {
+                decks = await response.json();
+                renderDecks();
             }
-        ];
-        localStorage.setItem('sts2_decks', JSON.stringify(decks));
+        } catch (error) {
+            console.error("데이터 로딩 실패:", error);
+            // 실패 시 로컬스토리지에서라도 가져옴
+            decks = JSON.parse(localStorage.getItem('sts2_decks')) || [];
+            renderDecks();
+        }
     }
+    
+    loadDecks();
     
     let currentDeck = { name: '', cards: [] }; // cards: [{ id, character, name, qty }]
     let votes = JSON.parse(localStorage.getItem('sts2_votes')) || {};
@@ -236,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Save/Share Deck
+    // Share Deck via GitHub Issue
     function shareDeck() {
         const name = deckNameInput.value.trim();
         if (!name) {
@@ -250,22 +246,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const newDeck = {
             id: Date.now(),
             name: name,
-            character: currentDeck.cards[0].character, // Primary character based on first card
+            character: document.querySelector('.tab-btn.active').getAttribute('data-cat'),
             cards: [...currentDeck.cards],
             likes: 0,
             dislikes: 0,
             date: new Date().toLocaleDateString()
         };
 
-        decks.unshift(newDeck);
-        localStorage.setItem('sts2_decks', JSON.stringify(decks));
+        // GitHub Issue 생성을 위한 데이터 준비
+        const issueTitle = `[NEW-DECK] ${newDeck.name}`;
+        const issueBody = `---DECK_JSON_START---\n${JSON.stringify(newDeck, null, 2)}\n---DECK_JSON_END---`;
+        const label = "new-deck";
         
-        // Reset and close
-        currentDeck = { name: '', cards: [] };
-        deckNameInput.value = '';
-        updateDeckUI();
-        deckBuilderModal.style.display = 'none';
-        renderDecks(currentFilter); // 현재 필터 유지
+        const githubIssueUrl = `https://github.com/${GITHUB_USER}/${GITHUB_REPO}/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}&labels=${label}`;
+
+        if (confirm('덱을 공유하시겠습니까?\n확인을 누르면 깃허브 이슈 등록 페이지로 이동합니다.\n(등록 후 잠시 후에 사이트에 반영됩니다.)')) {
+            window.open(githubIssueUrl, '_blank');
+            deckBuilderModal.style.display = 'none';
+            // 초기화
+            currentDeck = { name: '', cards: [] };
+            deckNameInput.value = '';
+            updateDeckUI();
+        }
     }
 
     // Render Shared Decks

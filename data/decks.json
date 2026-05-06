@@ -1,0 +1,28 @@
+[
+    {
+        "id": 1715000000000,
+        "name": "무한 단검 암살 덱",
+        "character": "Silent",
+        "cards": [
+            { "character": "Silent", "name": "BladeDance", "fileName": "150px-StS2_Silent-BladeDance.webp", "qty": 3 },
+            { "character": "Silent", "name": "Accuracy", "fileName": "150px-StS2_Silent-Accuracy.webp", "qty": 2 },
+            { "character": "Silent", "name": "Afterimage", "fileName": "150px-StS2_Silent-Afterimage.webp", "qty": 1 }
+        ],
+        "likes": 12,
+        "dislikes": 1,
+        "date": "2024. 05. 01."
+    },
+    {
+        "id": 1715000000001,
+        "name": "철벽 근력 방어 덱",
+        "character": "Ironclad",
+        "cards": [
+            { "character": "Ironclad", "name": "Barricade", "fileName": "150px-StS2_Ironclad-Barricade.webp", "qty": 1 },
+            { "character": "Ironclad", "name": "BodySlam", "fileName": "150px-StS2_Ironclad-BodySlam.webp", "qty": 2 },
+            { "character": "Ironclad", "name": "Entrench", "fileName": "150px-StS2_Ironclad-Entrench.webp", "qty": 1 }
+        ],
+        "likes": 8,
+        "dislikes": 0,
+        "date": "2024. 05. 02."
+    }
+]
