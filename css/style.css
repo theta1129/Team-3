@@ -316,6 +316,12 @@ html {
     margin: 0 auto;
 }
 
+/* 쇼케이스 내 컨테이너는 왼쪽 끝까지 붙을 수 있도록 제한 해제 */
+.character-showcase-wrapper .characters-container {
+    max-width: 100%;
+    margin: 0;
+}
+
 /* 탭 버튼 영역 */
 .character-tabs {
     display: flex;
@@ -402,6 +408,9 @@ html {
     min-height: 600px;
     z-index: 2;
     /* 오버레이 위로 텍스트 배치 */
+    align-items: flex-start; /* 중앙 정렬 해제하고 왼쪽으로 붙임 */
+    width: 100%; /* 전체 너비 사용 */
+    padding-left: 2rem; /* 왼쪽 간격 최소화 */
 }
 
 .char-content {
@@ -409,7 +418,7 @@ html {
     position: relative;
     z-index: 2;
     /* 오버레이 위로 */
-    padding: 4rem;
+    padding: 2rem 0; /* 좌우 패딩 최소화 */
     height: 100%;
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
