@@ -626,6 +626,33 @@ html {
     transform: translateY(-3px);
 }
 
+.outro-btns {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.decks-link-btn {
+    display: inline-block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    background-color: var(--primary-color);
+    padding: 1.5rem 3rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.decks-link-btn:hover {
+    background-color: #be123c;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(225, 29, 72, 0.3);
+}
+
 /* 푸터 */
 footer {
     text-align: center;
