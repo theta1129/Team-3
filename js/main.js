@@ -147,6 +147,42 @@ document.addEventListener('DOMContentLoaded', () => {
                     contentArea.style.backgroundSize = targetContent.getAttribute('data-bg-size') || 'cover';
                 }
             }
+            
+            // 탭 변경 시 열려있는 큰 카드 닫기
+            const largeCardDisplay = document.getElementById('large-card-display');
+            if (largeCardDisplay) {
+                largeCardDisplay.classList.remove('show');
+            }
         });
     });
+
+    // 카드 크게 보기 로직
+    const cardImages = document.querySelectorAll('.card-images img');
+    const largeCardDisplay = document.getElementById('large-card-display');
+    
+    if (largeCardDisplay) {
+        const largeCardImg = largeCardDisplay.querySelector('img');
+
+        // 작은 카드 클릭 시
+        cardImages.forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.stopPropagation(); // 이벤트 버블링 방지
+                const src = card.getAttribute('src');
+                
+                if (largeCardDisplay.classList.contains('show') && largeCardImg.getAttribute('src') === src) {
+                    // 이미 열려있는 동일한 카드를 다시 클릭하면 닫기
+                    largeCardDisplay.classList.remove('show');
+                } else {
+                    // 새로운 카드를 크게 띄우기
+                    largeCardImg.setAttribute('src', src);
+                    largeCardDisplay.classList.add('show');
+                }
+            });
+        });
+
+        // 크게 띄워진 카드를 클릭하면 닫기
+        largeCardDisplay.addEventListener('click', () => {
+            largeCardDisplay.classList.remove('show');
+        });
+    }
 });
