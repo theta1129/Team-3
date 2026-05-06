@@ -471,6 +471,38 @@ html {
     margin-right: 0.5rem;
 }
 
+.core-cards {
+    margin-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 1.5rem;
+}
+
+.core-cards h4 {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+.card-images {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.card-images img {
+    width: 120px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-images img:hover {
+    transform: translateY(-10px) scale(1.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+    z-index: 10;
+}
+
 /* 마무리 (Outro) 섹션 */
 .outro {
     background: url('../images/characters.png') center center / cover no-repeat;
