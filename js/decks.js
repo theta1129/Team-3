@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // === Data ===
-    // Card mapping based on filenames (extracted from directory listing)
+    // Card mapping based on filenames
     const cardData = {
         Ironclad: ["Aggression", "Anger", "Armaments", "AshenStrike", "Barricade", "Bash", "BattleTrance", "BloodWall", "Bloodletting", "Bludgeon", "BodySlam", "Brand", "Break", "Breakthrough", "Bully", "BurningPact", "Cascade", "Cinder", "Clash", "Colossus", "Conflagration", "Corruption", "CrimsonMantle", "Cruelty", "DarkEmbrace", "Defend", "DemonForm", "DemonicShield", "Dismantle", "Dominate", "DrumofBattle", "DualWield", "Entrench", "EvilEye", "ExpectaFight", "Feed", "FeelNoPain", "FiendFire", "FightMe", "FlameBarrier", "ForgottenRitual", "Havoc", "Headbutt", "Hellraiser", "Hemokinesis", "HowlfromBeyond", "Impervious", "InfernalBlade", "Inferno", "Inflame", "IronWave", "Juggernaut", "Juggling", "Mangle", "MoltenFist", "NotYet", "Offering", "One-TwoPunch", "PactsEnd", "PerfectedStrike", "Pillage", "PommelStrike", "PrimalForce", "Pyre", "Rage", "Rampage", "Rupture", "SecondWind", "SetupStrike", "ShrugItOff", "Spite", "Stampede", "Stoke", "Stomp", "StoneArmor", "Strike", "SwordBoomerang", "Tank", "Taunt", "TearAsunder", "Thrash", "Thunderclap", "Tremble", "TrueGrit", "TwinStrike", "Unmovable", "Unrelenting", "Uppercut", "Vicious", "Whirlwind"],
         Silent: ["Abrasive", "Accelerant", "Accuracy", "Acrobatics", "Adrenaline", "Afterimage", "Anticipate", "Assassinate", "Backflip", "Backstab", "BladeDance", "BladeofInk", "Blur", "BouncingFlask", "BubbleBubble", "BulletTime", "Burst", "CalculatedGamble", "Caltrops", "CloakandDagger", "CorrosiveWave", "DaggerSpray", "DaggerThrow", "Dash", "DeadlyPoison", "Defend", "Deflect", "Distraction", "DodgeandRoll", "EchoingSlash", "Envenom", "EscapePlan", "Expertise", "Expose", "FanofKnives", "Finisher", "Flanking", "Flechettes", "Flick-Flack", "FollowThrough", "Footwork", "GrandFinale", "HandTrick", "Haze", "HiddenDaggers", "InfiniteBlades", "KnifeTrap", "LeadingStrike", "LegSweep", "Malaise", "MasterPlanner", "MementoMori", "Mirage", "Murder", "Neutralize", "Nightmare", "NoxiousFumes", "Outbreak", "Outmaneuver", "PhantomBlades", "PiercingWail", "Pinpoint", "PoisonedStab", "Pounce", "PreciseCut", "Predator", "Prepared", "Reflex", "Ricochet", "SerpentForm", "ShadowStep", "Shadowmeld", "Skewer", "Slice", "Snakebite", "Sneaky", "Speedster", "StormofSteel", "Strangle", "Strike", "SuckerPunch", "Suppress", "Survivor", "Tactician", "TheHunt", "ToolsoftheTrade", "Tracking", "Untouchable", "UpMySleeve", "Well-LaidPlans", "WraithForm"],
@@ -10,30 +10,30 @@ document.addEventListener('DOMContentLoaded', () => {
         Colorless: ["Alchemize", "Anointed", "Apotheosis", "Apparition", "Automation", "BeaconofHope", "BeatDown", "BelieveinYou", "Bolas", "BrightestFlame", "ByrdSwoop", "Calamity", "Catastrophe", "Coordinate", "DarkShackles", "Discovery", "DramaticEntrance", "Enlightenment", "Entropy", "Equilibrium", "EternalArmor", "Exterminate", "Fasten", "FeedingFrenzy", "Finesse", "Fisticuffs", "FlashofSteel", "Fuel", "GangUp", "GiantRock", "GoldAxe", "HandofGreed", "HiddenGem", "HuddleUp", "Impatience", "Intercept", "JackofAllTrades", "Jackpot", "Knockdown", "Lift", "Luminesce", "MasterofStrategy", "Maul", "Mayhem", "Metamorphosis", "Mimic", "MindBlast", "MinionDiveBomb", "MinionSacrifice", "MinionStrike", "NeowsFury", "Nostalgia", "Omnislice", "Panache", "PanicButton", "Peck", "PrepTime", "Production", "Prolong", "Prowess", "Purity", "Rally", "Relax", "Rend", "Restlessness", "RollingBoulder", "Salvo", "Scrawl", "SecretTechnique", "SecretWeapon", "SeekerStrike", "Shiv", "Shockwave", "Soul", "SovereignBlade", "Splash", "Squash", "Stratagem", "SweepingGaze", "TagTeam", "TheBomb", "TheGambit", "ThinkingAhead", "ThrummingHatchet", "ToricToughness", "UltimateDefend", "UltimateStrike", "Volley", "Whistle", "Wish"]
     };
 
-    // 깃허브 설정 (유저님이 직접 채워주세요!)
-    const GITHUB_USER = 'theta1129'; 
-    const GITHUB_REPO = 'Team-3';
-    const DATA_URL = `./data/decks.json`; // 로컬 및 서버에서도 동일하게 작동
-
-    let decks = [];
-    
-    // 1. 서버(JSON)에서 데이터 불러오기
-    async function loadDecks() {
-        try {
-            const response = await fetch(DATA_URL + '?t=' + Date.now()); // 캐시 방지
-            if (response.ok) {
-                decks = await response.json();
-                renderDecks();
-            }
-        } catch (error) {
-            console.error("데이터 로딩 실패:", error);
-            // 실패 시 로컬스토리지에서라도 가져옴
-            decks = JSON.parse(localStorage.getItem('sts2_decks')) || [];
-            renderDecks();
+    let decks = JSON.parse(localStorage.getItem('sts2_decks')) || [
+        {
+            id: 1715000000000,
+            name: "무한 단검 암살 덱",
+            character: "Silent",
+            cards: [
+                { character: "Silent", name: "BladeDance", fileName: "150px-StS2_Silent-BladeDance.webp", qty: 3 },
+                { character: "Silent", name: "Accuracy", fileName: "150px-StS2_Silent-Accuracy.webp", qty: 2 },
+                { character: "Silent", name: "Afterimage", fileName: "150px-StS2_Silent-Afterimage.webp", qty: 1 }
+            ],
+            likes: 12, dislikes: 1, date: "2024. 05. 01."
+        },
+        {
+            id: 1715000000001,
+            name: "철벽 근력 방어 덱",
+            character: "Ironclad",
+            cards: [
+                { character: "Ironclad", name: "Barricade", fileName: "150px-StS2_Ironclad-Barricade.webp", qty: 1 },
+                { character: "Ironclad", name: "BodySlam", fileName: "150px-StS2_Ironclad-BodySlam.webp", qty: 2 },
+                { character: "Ironclad", name: "Entrench", fileName: "150px-StS2_Ironclad-Entrench.webp", qty: 1 }
+            ],
+            likes: 8, dislikes: 0, date: "2024. 05. 02."
         }
-    }
-    
-    loadDecks();
+    ];
     
     let currentDeck = { name: '', cards: [] }; // cards: [{ id, character, name, qty }]
     let votes = JSON.parse(localStorage.getItem('sts2_votes')) || {};
@@ -190,15 +190,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDeckUI();
     }
 
-    // Update Current Deck View
     function updateDeckUI() {
         selectedCardsList.innerHTML = '';
-        if (currentDeck.cards.length === 0) {
-            selectedCardsList.innerHTML = '<div class="empty-msg">카드를 선택하여 덱을 구성하세요.</div>';
-            totalCardsCount.innerText = '0';
-            return;
-        }
-
         let total = 0;
         currentDeck.cards.forEach((card, index) => {
             total += card.qty;
@@ -206,22 +199,21 @@ document.addEventListener('DOMContentLoaded', () => {
             item.className = 'selected-card-item';
             item.innerHTML = `
                 <img src="./images/cards/${card.fileName}" alt="${card.name}">
-                <div class="card-info">
-                    <span class="card-name">${card.name}</span>
-                    <span class="card-char" style="font-size: 0.7rem; color: #64748b;">${card.character}</span>
+                <div style="flex-grow:1;">
+                    <div style="font-size:0.9rem;">${card.name}</div>
+                    <div class="card-controls">
+                        <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                        <span>${card.qty}</span>
+                        <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                    </div>
                 </div>
-                <div class="card-controls">
-                    <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
-                    <span>${card.qty}</span>
-                    <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
-                </div>
+                <button onclick="removeCard(${index})" style="background:none; border:none; color:#ef4444; cursor:pointer;">&times;</button>
             `;
             selectedCardsList.appendChild(item);
         });
         totalCardsCount.innerText = total;
     }
 
-    // Global qty changer (attached to window for simplicity in innerHTML)
     window.changeQty = (index, delta) => {
         currentDeck.cards[index].qty += delta;
         if (currentDeck.cards[index].qty <= 0) {
@@ -230,8 +222,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDeckUI();
     };
 
-    // Save/Share Deck
-    // Share Deck via GitHub Issue
+    window.removeCard = (index) => {
+        currentDeck.cards.splice(index, 1);
+        updateDeckUI();
+    };
+
+    // Save/Share Deck (LocalStorage Only)
     function shareDeck() {
         const name = deckNameInput.value.trim();
         if (!name) {
@@ -253,21 +249,16 @@ document.addEventListener('DOMContentLoaded', () => {
             date: new Date().toLocaleDateString()
         };
 
-        // GitHub Issue 생성을 위한 데이터 준비
-        const issueTitle = `[NEW-DECK] ${newDeck.name}`;
-        const issueBody = `---DECK_JSON_START---\n${JSON.stringify(newDeck, null, 2)}\n---DECK_JSON_END---`;
-        const label = "new-deck";
+        decks.unshift(newDeck);
+        localStorage.setItem('sts2_decks', JSON.stringify(decks));
         
-        const githubIssueUrl = `https://github.com/${GITHUB_USER}/${GITHUB_REPO}/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}&labels=${label}`;
-
-        if (confirm('덱을 공유하시겠습니까?\n확인을 누르면 깃허브 이슈 등록 페이지로 이동합니다.\n(등록 후 잠시 후에 사이트에 반영됩니다.)')) {
-            window.open(githubIssueUrl, '_blank');
-            deckBuilderModal.style.display = 'none';
-            // 초기화
-            currentDeck = { name: '', cards: [] };
-            deckNameInput.value = '';
-            updateDeckUI();
-        }
+        // Reset and close
+        currentDeck = { name: '', cards: [] };
+        deckNameInput.value = '';
+        updateDeckUI();
+        deckBuilderModal.style.display = 'none';
+        renderDecks();
+        alert('덱이 로컬에 저장되었습니다!');
     }
 
     // Render Shared Decks
@@ -385,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             deck.cards.forEach(card => {
                 const item = document.createElement('div');
-                item.className = 'detail-card-item'; // fade-in 제거하여 즉시 보이게 함
+                item.className = 'detail-card-item';
                 item.innerHTML = `
                     <img src="./images/cards/${card.fileName}" alt="${card.name}" onerror="this.src='./images/cards/150px-StS2_Colorless-Shiv.webp'; this.onerror=null;">
                     <div class="card-qty-badge">x${card.qty}</div>
