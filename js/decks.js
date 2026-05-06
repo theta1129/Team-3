@@ -258,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDeckUI();
         deckBuilderModal.style.display = 'none';
         renderDecks();
-        alert('덱이 로컬에 저장되었습니다!');
     }
 
     // Render Shared Decks
