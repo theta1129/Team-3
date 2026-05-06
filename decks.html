@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slay the Spire 2 - 덱 및 카드</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/decks.css">
+</head>
+
+<body class="decks-page">
+    <!-- 헤더 / 네비게이션 -->
+    <header class="header">
+        <div class="logo">
+            <a href="index.html">
+                <img src="./images/SlayTheSpire.png" alt="Slay the Spire 2 Logo" class="header-logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html#intro">게임 소개</a></li>
+                <li><a href="index.html#details">세부 설명</a></li>
+                <li><a href="index.html#characters">캐릭터</a></li>
+                <li><a href="decks.html" class="active">덱 및 카드</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 히어로 섹션 -->
+        <section class="decks-hero">
+            <div class="container">
+                <h1 class="fade-in">커뮤니티 덱 빌더</h1>
+                <p class="fade-in">최고의 전략을 공유하고 다른 도전자들의 덱을 평가하세요.</p>
+                <button id="open-builder-btn" class="btn fade-in">덱 추가</button>
+            </div>
+        </section>
+
+        <!-- 덱 리스트 필터/정렬 (옵션) -->
+        <section class="deck-filters container fade-in">
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">전체</button>
+                <button class="filter-btn" data-filter="Ironclad">아이언클래드</button>
+                <button class="filter-btn" data-filter="Silent">사일런트</button>
+                <button class="filter-btn" data-filter="Regent">리전트</button>
+                <button class="filter-btn" data-filter="Necrobinder">네크로바인더</button>
+                <button class="filter-btn" data-filter="Defect">디펙트</button>
+            </div>
+
+            <div class="search-sort-bar">
+                <div class="search-box">
+                    <input type="text" id="deck-search-input" placeholder="덱 이름 검색...">
+                </div>
+                <div class="advanced-toggle">
+                    <button id="toggle-advanced-btn" class="text-link-btn">고급 필터 ▽</button>
+                </div>
+                <div class="sort-group">
+                    <button class="sort-btn active" data-sort="newest">최신순</button>
+                    <button class="sort-btn" data-sort="popular">인기순</button>
+                </div>
+            </div>
+
+            <!-- 고급 필터 (카드 포함/미포함) -->
+            <div id="advanced-filters" class="advanced-filters-panel" style="display:none;">
+                <div class="filter-row">
+                    <label>포함할 카드:</label>
+                    <div class="picker-container">
+                        <button id="pick-include-btn" class="picker-btn">카드 선택...</button>
+                        <div id="selected-include-card" class="selected-pill" style="display:none;"></div>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <label>제외할 카드:</label>
+                    <div class="picker-container">
+                        <button id="pick-exclude-btn" class="picker-btn">카드 선택...</button>
+                        <div id="selected-exclude-card" class="selected-pill" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 덱 리스트 피드 -->
+        <section class="deck-feed container">
+            <div id="deck-list" class="deck-grid">
+                <!-- 덱 카드가 여기에 동적으로 삽입됩니다. -->
+            </div>
+        </section>
+    </main>
+
+    <!-- 덱 빌더 모달/오버레이 -->
+    <div id="deck-builder-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>새로운 덱 설계</h2>
+                <button id="close-builder-btn" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="builder-layout">
+                <!-- 왼쪽: 카드 선택 영역 -->
+                <div class="card-selector">
+                    <div class="selector-tabs">
+                        <button class="tab-btn active" data-cat="Ironclad">아이언클래드</button>
+                        <button class="tab-btn" data-cat="Silent">사일런트</button>
+                        <button class="tab-btn" data-cat="Regent">리전트</button>
+                        <button class="tab-btn" data-cat="Necrobinder">네크로바인더</button>
+                        <button class="tab-btn" data-cat="Defect">디펙트</button>
+                        <button class="tab-btn" data-cat="Colorless">무색</button>
+                    </div>
+                    <div class="card-search-box">
+                        <input type="text" id="card-search-input" placeholder="카드 이름으로 검색...">
+                    </div>
+                    <div id="card-grid" class="card-grid-selector">
+                        <!-- 카드 이미지들이 카테고리별로 여기에 뜹니다. -->
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 현재 덱 구성 영역 -->
+                <div class="current-deck-view">
+                    <div class="deck-header">
+                        <input type="text" id="deck-name-input" placeholder="덱 이름을 입력하세요..." maxlength="30">
+                        <div class="deck-stats">
+                            <span id="total-cards-count">0</span> Cards
+                        </div>
+                    </div>
+                    <div id="selected-cards-list" class="selected-cards-list">
+                        <!-- 선택된 카드들이 리스트 형태로 나타납니다. -->
+                        <div class="empty-msg">카드를 선택하여 덱을 구성하세요.</div>
+                    </div>
+                    <div class="builder-footer">
+                        <button id="share-deck-btn" class="btn primary-btn">덱 공유하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 덱 상세보기 모달 -->
+    <div id="deck-detail-modal" class="modal">
+        <div class="modal-content detail-content">
+            <div class="modal-header">
+                <h2 id="detail-deck-name">덱 제목</h2>
+                <button id="close-detail-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="detail-body">
+                <div id="detail-card-grid" class="detail-card-grid">
+                    <!-- 덱에 포함된 모든 카드가 크게 나타납니다. -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- 카드 선택용 모달 (공용) -->
+    <div id="card-picker-modal" class="modal">
+        <div class="modal-content picker-content">
+            <div class="modal-header">
+                <h2>필터링 카드 선택</h2>
+                <button id="close-picker-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="card-selector">
+                <div class="selector-tabs" id="picker-tabs">
+                    <button class="tab-btn active" data-cat="Ironclad">아이언클래드</button>
+                    <button class="tab-btn" data-cat="Silent">사일런트</button>
+                    <button class="tab-btn" data-cat="Regent">리전트</button>
+                    <button class="tab-btn" data-cat="Necrobinder">네크로바인더</button>
+                    <button class="tab-btn" data-cat="Defect">디펙트</button>
+                    <button class="tab-btn" data-cat="Colorless">무색</button>
+                </div>
+                <div class="card-search-box">
+                    <input type="text" id="picker-card-search" placeholder="카드 검색...">
+                </div>
+                <div id="picker-card-grid" class="card-grid-selector">
+                    <!-- 카드 목록 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 플로팅 덱 추가 버튼 -->
+    <button id="floating-add-btn" class="floating-btn">
+        <span>+</span>
+    </button>
+
+    <footer class="footer">
+        <p>&copy; 2026 Slay the Spire 2 Fan Site. All rights reserved.</p>
+    </footer>
+
+    <script src="./js/decks.js"></script>
+</body>
+
+</html>

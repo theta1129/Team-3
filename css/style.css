@@ -1,3 +1,6 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+
 /* 기본 초기화 및 폰트 설정 */
 :root {
     --bg-color: #0f172a;
@@ -360,14 +363,22 @@ html {
 .character-showcase-wrapper {
     position: relative;
     width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    /* 브라우저 전체 너비로 확장 */
+    margin-left: calc(-50vw + 50%); /* 브라우저 전체 너비로 확장 */
     background-color: var(--secondary-bg);
+    padding: 4rem 0; /* 내부 상하 여백 */
+}
+
+/* 동적 배경 전환을 위한 별도 레이어 (페이드 효과용) */
+.dynamic-bg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-size: cover;
-    background-position: center top;
-    transition: background-image 0.5s ease-in-out;
-    padding: 4rem 0;
-    /* 내부 상하 여백 */
+    background-position: center center;
+    transition: opacity 0.4s ease-in-out; /* 배경 이미지 대신 투명도를 애니메이션 */
+    z-index: 0;
 }
 
 /* 어두운 오버레이 레이어로 위아래 경계를 부드럽게 (AI 티가 나지 않게 자연스러운 블렌딩) */
@@ -433,9 +444,28 @@ html {
 }
 
 .char-text-box h3 {
-    font-size: 2.5rem;
+    font-family: 'Cinzel', 'Pretendard', sans-serif;
+    font-size: 2.8rem; /* 약간 더 크게 */
     color: var(--text-color);
     margin-bottom: 1.5rem;
+    line-height: 1.2; /* 이름 사이 간격 조절 */
+}
+
+.flavor-text {
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--accent-color);
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    border-left: 2px solid var(--accent-color);
+    padding-left: 1rem;
+}
+
+.detailed-desc {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #e2e8f0;
+    margin-bottom: 2rem;
 }
 
 .char-text-box p {

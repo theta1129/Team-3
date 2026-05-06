@@ -7,19 +7,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     navLinks.forEach(link => {
         link.addEventListener('click', function (e) {
-            e.preventDefault();
+            const href = this.getAttribute('href');
+            
+            // #으로 시작하는 앵커 링크인 경우에만 스무스 스크롤 작동
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                const targetElement = document.querySelector(href);
 
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-
-            const targetElement = document.querySelector(targetId);
-
-            if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             }
+            // 그 외(예: decks.html)는 브라우저 기본 동작(페이지 이동)을 따름
         });
     });
 
@@ -96,10 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let progress = -rect.top / scrollRange;
         progress = Math.max(0, Math.min(1, progress));
 
-        // Slay the Spire 분위기 색상 (초기: 짙은 남색 -> 중반: 검붉은색 -> 후반: 심연의 검은색)
-        const c1 = { r: 15, g: 23, b: 42 };
-        const c2 = { r: 60, g: 20, b: 20 };
-        const c3 = { r: 5, g: 5, b: 5 };
+        // Slay the Spire 분위기 색상 (더 밝고 진하게 조정)
+        const c1 = { r: 40, g: 50, b: 90 };  // 더 밝고 진한 남색
+        const c2 = { r: 180, g: 40, b: 40 }; // 매우 강렬하고 밝은 빨간색
+        const c3 = { r: 50, g: 15, b: 15 };  // 어두운 붉은 기운
 
         let r, g, b;
         if (progress < 0.5) {
@@ -120,17 +122,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const charTabs = document.querySelectorAll('.char-tab');
     const charContents = document.querySelectorAll('.char-content');
     const contentArea = document.querySelector('.character-showcase-wrapper');
+    const bgLayer = document.getElementById('dynamic-bg-layer');
+
+    // 첫 클릭 시 '팍' 뜨는 현상을 막기 위해 모든 배경 이미지 미리 로드 (Preloading)
+    const imageUrls = Array.from(charContents).map(c => c.getAttribute('data-bg'));
+    imageUrls.forEach(url => {
+        if (url) {
+            const img = new Image();
+            img.src = url;
+        }
+    });
 
     // 초기 배경 이미지 설정
     const activeContent = document.querySelector('.char-content.active');
-    if (activeContent && contentArea) {
-        contentArea.style.backgroundImage = `url('${activeContent.getAttribute('data-bg')}')`;
-        contentArea.style.backgroundPosition = activeContent.getAttribute('data-bg-pos') || 'center center';
-        contentArea.style.backgroundSize = activeContent.getAttribute('data-bg-size') || 'cover';
+    if (activeContent && bgLayer) {
+        bgLayer.style.backgroundImage = `url('${activeContent.getAttribute('data-bg')}')`;
+        bgLayer.style.backgroundPosition = activeContent.getAttribute('data-bg-pos') || 'center center';
+        bgLayer.style.backgroundSize = activeContent.getAttribute('data-bg-size') || 'cover';
     }
 
     charTabs.forEach(tab => {
         tab.addEventListener('click', () => {
+            if (tab.classList.contains('active')) return; // 이미 활성화된 탭 무시
+
             // 모든 탭과 콘텐츠 비활성화
             charTabs.forEach(t => t.classList.remove('active'));
             charContents.forEach(c => c.classList.remove('active'));
@@ -139,12 +153,18 @@ document.addEventListener('DOMContentLoaded', () => {
             tab.classList.add('active');
             const targetId = tab.getAttribute('data-target');
             const targetContent = document.getElementById(targetId);
+            
             if (targetContent) {
                 targetContent.classList.add('active');
-                if (contentArea) {
-                    contentArea.style.backgroundImage = `url('${targetContent.getAttribute('data-bg')}')`;
-                    contentArea.style.backgroundPosition = targetContent.getAttribute('data-bg-pos') || 'center center';
-                    contentArea.style.backgroundSize = targetContent.getAttribute('data-bg-size') || 'cover';
+                if (bgLayer) {
+                    // 자연스러운 교체를 위해 먼저 투명하게 만든 후 이미지 교체
+                    bgLayer.style.opacity = '0';
+                    setTimeout(() => {
+                        bgLayer.style.backgroundImage = `url('${targetContent.getAttribute('data-bg')}')`;
+                        bgLayer.style.backgroundPosition = targetContent.getAttribute('data-bg-pos') || 'center center';
+                        bgLayer.style.backgroundSize = targetContent.getAttribute('data-bg-size') || 'cover';
+                        bgLayer.style.opacity = '1';
+                    }, 400); // CSS transition 시간과 맞춰 대기
                 }
             }
             
